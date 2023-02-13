@@ -33,6 +33,13 @@ class MainActivity : FlutterActivity() {
             result.success(batterLevel)
         } }
     }
+    override fun onCreate(savedInstanceState : Bundle?){
+        super.onCreate(savedInstanceState)
+        Handler().postDelayed({
+            val batterLevel = getBatteryLevel()
+            channel.invokeMethod("reportBatteryLevel", batterLevel)
+        },1000)
+    }
     private fun getBatteryLevel() : Int {
         val batteryLevel : Int
         if(VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP){

@@ -15,6 +15,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   static const batterylevel = MethodChannel('dev-devrash/battery');
   String getBattery = 'Wating..';
+  int listenBattery = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,7 +36,17 @@ class _HomePageState extends State<HomePage> {
                 await getBatterylevel();
               },
             ),
-
+            const SizedBox(
+              height: 60,
+            ),
+            Text('Lisned battery $listenBattery'),
+            const SizedBox(
+              height: 20,
+            ),
+            ElevatedButton(
+              onPressed: listenBatterylevel,
+              child: const Text('Listen Battery'),
+            ),
           ],
         ),
       ),
@@ -50,5 +61,13 @@ class _HomePageState extends State<HomePage> {
     setState(() {});
   }
 
-
+  void listenBatterylevel() async {
+    batterylevel.setMethodCallHandler((call) async {
+      if (call.method == 'reportBatteryLevel') {
+        listenBattery = call.arguments as int;
+      }
+    });
+    log('batterLevel');
+    setState(() {});
+  }
 }
