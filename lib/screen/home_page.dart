@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
@@ -66,6 +67,7 @@ class _HomePageState extends State<HomePage> {
       if (call.method == 'reportBatteryLevel') {
         listenBattery = call.arguments as int;
       }
+      setState(() {});
     });
     log('batterLevel');
     setState(() {});
