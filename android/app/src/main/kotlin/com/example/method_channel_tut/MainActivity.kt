@@ -17,6 +17,8 @@ import android.content.ContextWrapper
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.BroadcastReceiver
+import android.util.Log
+import java.util.*
 
 
 class MainActivity : FlutterActivity() {
@@ -44,10 +46,19 @@ class MainActivity : FlutterActivity() {
 
     override fun onCreate(savedInstanceState : Bundle?){
         super.onCreate(savedInstanceState)
-        Handler().postDelayed({
-            val batterLevel = getBatteryLevel()
-            channel.invokeMethod("reportBatteryLevel", batterLevel)
-        },1000)
+        //! timer will run on another thread but it will give value [batterylevel] and give that
+        //! value to main thread which is [runOnUiThread]
+        Timer().scheduleAtFixedRate(object : TimerTask() {
+            override fun run() {
+                runOnUiThread(){
+                    val batterLevel = getBatteryLevel()
+                channel.invokeMethod("reportBatteryLevel", batterLevel)
+               Log.e("battery_level",batterLevel.toString())
+                }              
+            }
+        //! first parameter indicates where this timer will start while running [onCreate]
+        //! Second parameter indicates time duration this [Timer] will run
+        }, 0, 1000)
     }
 
     private fun getBatteryLevel() : Int {
